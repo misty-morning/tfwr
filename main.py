@@ -1,4 +1,4 @@
-field_height = 6
+field_height = 8
 
 field_map = [
 	[
@@ -68,11 +68,16 @@ while True:
 	
 	handle_row(handle_pumpkin, North, East, True, True)
 	
+	handle_row(handle_pumpkin, South, East, True, True)
+	
+	handle_row(handle_carrot, North, East, False, False)
+	
 	handle_row(handle_trees, South, East, False, False)
 	
 	handle_row(handle_carrot, North, East, False, False)
 	
 	handle_row(handle_trees, South, East, False, False)
+	
 
 	#return route
 
