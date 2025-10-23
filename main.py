@@ -1,10 +1,16 @@
 field_height = 6
 
-def handle_hay():
+field_map = [
+	[
+		Entities.Pumpkin, Entities.Pumpkin, Entities.Pumpkin, 
+	]
+]
+
+def handle_hay(i, water, fertilize):
 	if can_harvest():
 		harvest()
 
-def handle_carrot():
+def handle_carrot(i, water, fertilize):
 	gt = get_ground_type()
 	if can_harvest():
 		harvest()
@@ -14,65 +20,59 @@ def handle_carrot():
 	elif gt == Grounds.Soil:
 		plant(Entities.Carrot)
 		
-def handle_pumpkin():
-	gt = get_ground_type()
+def handle_pumpkin(i, water, fertilize):
 	if can_harvest():
 		harvest()
-		if gt != Grounds.Soil:
+		if get_ground_type() != Grounds.Soil:
 				till()
-		plant(Entities.Pumpkin)
-	elif gt == Grounds.Soil:
-		plant(Entities.Pumpkin)
 
-def handle_bush():
+	if get_ground_type() == Grounds.Soil:
+		plant(Entities.Pumpkin)
+		if water:
+			use_item(Items.Water)
+		if fertilize:
+			use_item(Items.Fertilizer)
+
+def handle_bush(i, water, fertilize):
 	if can_harvest():
 		harvest()
 		plant(Entities.Bush)
 		
-def handle_row(action, vertical_way, horizontal_way):
-	for i in range(field_height):
-		#print("handle row", i)
-		action()
-		if i != (field_height - 1):
-			move(vertical_way)
-		else:
-			move(horizontal_way)
-			
-
-	
-
-def handle_tree_row(_, vertical_way, horizontal_way, water):
-	for i in range(field_height):
+def handle_trees(i, water, fertilize):
 		if can_harvest():
 			harvest()
 		if (i % 2) != 0:
 			plant(Entities.Tree)
 			if water:
 				use_item(Items.Water)
+			if fertilize:
 				use_item(Items.Fertilizer)
-	
+
+def handle_row(action, vertical_way, horizontal_way, water, fertilize):
+	for i in range(field_height):
+		#print("handle row", i)
+		action(i, water, fertilize)
 		if i != (field_height - 1):
 			move(vertical_way)
 		else:
 			move(horizontal_way)
-			
 
 clear()
 
 while True:
 	
 #main route
-	handle_row(handle_pumpkin, North, East)
+	handle_row(handle_pumpkin, North, East, True, True)
 	
-	handle_row(handle_pumpkin, South, East)
+	handle_row(handle_pumpkin, South, East, True, True)
 	
-	handle_row(handle_pumpkin, North, East)
+	handle_row(handle_pumpkin, North, East, True, True)
 	
-	handle_tree_row(handle_carrot, South, East, True)
+	handle_row(handle_trees, South, East, False, False)
 	
-	handle_row(handle_carrot, North, East)
+	handle_row(handle_carrot, North, East, False, False)
 	
-	handle_tree_row(handle_hay, South, East, True)
+	handle_row(handle_trees, South, East, False, False)
 
 	#return route
 
